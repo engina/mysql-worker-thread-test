@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Work {
+  id          Int       @id @default(autoincrement())
+  title       String
+  startedAt   DateTime?
+  attempts    Int       @default(0)
+  completedAt DateTime?
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
+  Completed Completed?
+
+  @@index([completedAt, startedAt, attempts])
+}
+
+model Completed {
+  id        Int      @id @default(autoincrement())
+  work      Work     @relation(fields: [workId], references: [id])
+  workId    Int      @unique
+  createdAt DateTime @default(now())
+}
